@@ -11,21 +11,22 @@ const (
 
 ## Functions
 
-### func [SetOpaxDetails](/opax.go#L110)
+### func [SetOpaxDetails](/opax.go#L111)
 
 `func SetOpaxDetails(https bool, address string, verbose bool, port ...int64)`
 
 SetOpaxDetails ip or uri and set port with verbose state. Default port is nil and default verbose is false.
 In production mode is not necessary to set a verbose state in the ci configuration file
 
-## TEST UNITARY Opax
+HOW RUN UNITS TEST TO Opax ?
 
-Before Test Opax prepare environment with mock OPA binary with command lines :
+Before Test:
+- prepare environment to mock OPA binary with command lines :
 << make opa >> and after << make run >>
 
-For stop opa server run command line : << make stop >>
+- for stop opa server run command line : << make stop >>
 
-Run test with command line : << make test >>
+- run test with command line : << make test >>
 
 ## Types
 

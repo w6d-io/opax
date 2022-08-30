@@ -2,11 +2,12 @@ package opax
 
 import (
 	"context"
-	"github.com/w6d-io/x/errorx"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/w6d-io/x/errorx"
 )
 
 // Conn is the struct variable for connect to a opa server
@@ -54,31 +55,31 @@ var (
 // callOpaServer concat and format the svc and port from Conn variable
 func (k auth) callOpaServer(uri string, body string) (string, int, string, error) {
 
-		address := k.Protocol + k.Address + k.Port + uri
+	address := k.Protocol + k.Address + k.Port + uri
 
-		req, err := http.NewRequest("POST", address, strings.NewReader(body))
-		if err != nil {
-			return "", 0, "", errorx.Wrap(err, "decode address failed")
-		}
-		req.Header.Add("content-type","application/json")
-		req.Header.Add("cache-control", "no-cache")
-
-		// TODO: check err
-		client := &http.Client{}
-
-		res, err := client.Do(req)
-		if err != nil {
-			return "", 0, "", errorx.Wrap(err, "decode address failed with address " + address)
-		}
-		defer res.Body.Close()
-
-		data, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			return "", 0, "", errorx.Wrap(err, "decode address failed")
-		}
-
-		return res.Status, res.StatusCode, string(data), err
+	req, err := http.NewRequest("POST", address, strings.NewReader(body))
+	if err != nil {
+		return "", 0, "", errorx.Wrap(err, "decode address failed")
 	}
+	req.Header.Add("content-type", "application/json")
+	req.Header.Add("cache-control", "no-cache")
+
+	// TODO: check err
+	client := &http.Client{}
+
+	res, err := client.Do(req)
+	if err != nil {
+		return "", 0, "", errorx.Wrap(err, "decode address failed with address "+address)
+	}
+	defer res.Body.Close()
+
+	data, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return "", 0, "", errorx.Wrap(err, "decode address failed")
+	}
+
+	return res.Status, res.StatusCode, string(data), err
+}
 
 // getVerboseState return the verbose state from Conn variable
 func (k Conn) getVerboseState() bool {
@@ -99,14 +100,15 @@ func (k Conn) getVerboseState() bool {
 // SetOpaxDetails ip or uri and set port with verbose state. Default port is nil and default verbose is false.
 // In production mode is not necessary to set a verbose state in the ci configuration file
 //
-// TEST UNITARY Opax
+// HOW RUN UNITS TEST TO Opax ?
 //
-// Before Test Opax prepare environment with mock OPA binary with command lines :
+// Before Test:
+// - prepare environment to mock OPA binary with command lines :
 // << make opa >> and after << make run >>
 //
-// For stop opa server run command line : << make stop >>
+// - for stop opa server run command line : << make stop >>
 //
-// Run test with command line : << make test >>
+// - run test with command line : << make test >>
 func SetOpaxDetails(https bool, address string, verbose bool, port ...int64) {
 	var p string
 	var h string
@@ -121,5 +123,5 @@ func SetOpaxDetails(https bool, address string, verbose bool, port ...int64) {
 		h = "https://"
 	}
 
-	Opax = &auth{Conn{Protocol:h, Address: address, Port: p, Verbose: strconv.FormatBool(verbose)}}
+	Opax = &auth{Conn{Protocol: h, Address: address, Port: p, Verbose: strconv.FormatBool(verbose)}}
 }

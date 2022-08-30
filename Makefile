@@ -14,7 +14,7 @@ GOOS       = $(shell go env GOOS)
 endif
 
 
-GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports
+GO_DEPENDENCIES = golang.org/x/tools/cmd/goimports@latest
 
 define make-go-dependency
   # go install is responsible for not re-building when the code hasn't changed
@@ -50,7 +50,7 @@ test: fmt vet
 .PHONY: bin/goreadme
 bin/goreadme:
 	GOBIN=$(PWD)/bin \
-	go install github.com/posener/goreadme/cmd/goreadme
+	go install github.com/posener/goreadme/cmd/goreadme@latest
 
 .PHONY: readme
 readme: bin/goreadme
@@ -87,3 +87,4 @@ endif
 
 clean:
 	rm -rf bin
+	$(info ************ BIN FOLDER IS DELETED **********)

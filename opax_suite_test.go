@@ -18,8 +18,8 @@ import (
 
 func TestOpax(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "opax Suite," +
-		" Before Test prepare environment with mock OPA with command lines |1) << make opa >> |2) << make run >>" +
+	RunSpecs(t, "opax Suite,"+
+		" Before Test prepare environment with mock OPA with command lines |1) << make opa >> |2) << make run >>"+
 		" For stop opa server run << make stop >> ")
 }
 

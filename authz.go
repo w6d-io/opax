@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/go-logr/logr"
 	"google.golang.org/grpc/metadata"
-	"net/http"
 
 	"github.com/w6d-io/x/errorx"
 	"github.com/w6d-io/x/logx"
@@ -18,18 +19,17 @@ const (
 )
 
 var (
-	errQueryNotFound        = errorx.New(nil, OpaDataName + " params request not found")
-	errQueryPathNotFound    = errorx.New(nil, OpaDataName + " Path param request not found")
-	errQueryInputNotFound   = errorx.New(nil, OpaDataName + " Input param request not found")
-	errNoMDFromCtx          = errorx.New(nil, "cannot get metadata from context")
-	errDecisionOpaFromCurl  = errorx.New(nil, OpaDataName + " Decision from curl not successful")
+	errQueryNotFound       = errorx.New(nil, OpaDataName+" params request not found")
+	errQueryPathNotFound   = errorx.New(nil, OpaDataName+" Path param request not found")
+	errQueryInputNotFound  = errorx.New(nil, OpaDataName+" Input param request not found")
+	errNoMDFromCtx         = errorx.New(nil, "cannot get metadata from context")
+	errDecisionOpaFromCurl = errorx.New(nil, OpaDataName+" Decision from curl not successful")
 )
 
 type Query struct {
-	Path string`json:"path"`
+	Path  string                 `json:"path"`
 	Input map[string]interface{} `json:"input"`
 }
-
 
 // GetAuthorizationFromHttp is used to check if the request to query is authorized or unauthorized
 // and also return opa decision
@@ -37,7 +37,7 @@ type Query struct {
 // if OPA is unreachable or an other issues, return nil deccision with statusCode of the call and error-go
 func (a auth) GetAuthorizationFromHttp(ctx context.Context, params interface{}) (string, error) {
 	log := logx.WithName(ctx, "GetAuthorizationFromHttp")
-	var query  Query
+	var query Query
 
 	m, _ := params.(map[string]interface{})
 	b, err := json.Marshal(m)
@@ -69,7 +69,7 @@ func (a auth) GetAuthorizationFromHttp(ctx context.Context, params interface{}) 
 // if params query is not set, return a nil query with StatusBadRequest and error
 // if OPA is unreachable or an other issues, return nil deccision with statusCode of the call and error-go
 func (a auth) GetAuthorizationFromGRPCCtx(ctx context.Context) (string, error) {
-	log := logx.WithName(ctx,"GetAuthorizationFromGRPCCtx")
+	log := logx.WithName(ctx, "GetAuthorizationFromGRPCCtx")
 
 	//get metadata from ctx
 	md, ok := metadata.FromIncomingContext(ctx)
@@ -91,7 +91,7 @@ func (a auth) GetAuthorizationFromGRPCCtx(ctx context.Context) (string, error) {
 		return "", errorx.NewHTTP(errQueryNotFound, http.StatusNotFound, "empty metadata")
 	}
 
-	var query  Query
+	var query Query
 	err := json.Unmarshal([]byte(md["opa"][0]), &query)
 	if err != nil {
 		log.Error(err, "get all params from query failed")
@@ -118,11 +118,11 @@ func (a auth) do(ctx context.Context, query Query) (string, error) {
 
 	result, err := a.getOpaDecisionFromCurl(log, query)
 	if err != nil {
-		log.Error(err ,"do() Error !")
+		log.Error(err, "do() Error !")
 		return "", err
 	}
 
-	str := fmt.Sprintf("%v",  result)
+	str := fmt.Sprintf("%v", result)
 	return str, nil
 }
 
@@ -135,14 +135,14 @@ func (a auth) getOpaDecisionFromCurl(log logr.Logger, query Query) (string, erro
 		return "", errorx.NewHTTP(err, http.StatusBadRequest, "get opa param Input failed")
 	}
 
-	status, statutcode, resp, err := a.callOpaServer(query.Path, `{"input":` + string(jsonStr) +`}`)
+	status, statutcode, resp, err := a.callOpaServer(query.Path, `{"input":`+string(jsonStr)+`}`)
 	if err != nil {
 		log.Error(err, "get opa decision failed")
 		return string(jsonStr), errorx.NewHTTP(err, statutcode, "get opa decision failed")
 	}
 
 	if statutcode != 200 {
-		return string(jsonStr), errorx.NewHTTP(errDecisionOpaFromCurl, statutcode, "opa server not return a status code 200 but return  : " + status )
+		return string(jsonStr), errorx.NewHTTP(errDecisionOpaFromCurl, statutcode, "opa server not return a status code 200 but return  : "+status)
 	}
 
 	return resp, err

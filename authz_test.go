@@ -2,6 +2,7 @@ package opax_test
 
 import (
 	"encoding/json"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	Opax "github.com/w6d-io/opax"
@@ -26,8 +27,8 @@ var _ = Describe("Session", func() {
 			Expect(decision).ToNot(BeEmpty())
 			Expect(decision).To(Equal("{\"result\":{\"foo\":\"bar\"}}"))
 		})
-			It("succeeds to Get OPA Decision FromGRPCCtx to path << str >>", func() {
-			Opax.SetOpaxDetails(false,"127.0.0.1", false, 8181)
+		It("succeeds to Get OPA Decision FromGRPCCtx to path << str >>", func() {
+			Opax.SetOpaxDetails(false, "127.0.0.1", false, 8181)
 
 			ctx = metadata.NewIncomingContext(ctx, metadata.MD{
 				Opax.OpaDataName: []string{`{"path": "/v1/data/system/str", "input":{"foo": "bar"}}`},
@@ -36,9 +37,9 @@ var _ = Describe("Session", func() {
 			Expect(err).ToNot(HaveOccurred())
 			Expect(decision11).ToNot(BeEmpty())
 			Expect(decision11).To(Equal("{\"result\":\"foo\"}"))
-			})
+		})
 		It("succeeds to Get OPA Decision FromGRPCCtx to path << main >>", func() {
-			Opax.SetOpaxDetails(false,"127.0.0.1", false, 8181)
+			Opax.SetOpaxDetails(false, "127.0.0.1", false, 8181)
 
 			ctx = metadata.NewIncomingContext(ctx, metadata.MD{
 				Opax.OpaDataName: []string{`{"path": "/v1/data/system/main", "input":{"foo": "bar"}}`},
@@ -49,7 +50,7 @@ var _ = Describe("Session", func() {
 			Expect(decision33).To(Equal("{\"result\":true}"))
 		})
 		It("Error to Get OPA Decision FromGRPCCtx to fake path", func() {
-			Opax.SetOpaxDetails(false,"127.0.0.1", false, 8181)
+			Opax.SetOpaxDetails(false, "127.0.0.1", false, 8181)
 			ctx = metadata.NewIncomingContext(ctx, metadata.MD{
 				Opax.OpaDataName: []string{`{"path": "/foo/bar/foo", "input":{"foo": "bar"}}`},
 			})
@@ -58,7 +59,7 @@ var _ = Describe("Session", func() {
 			Expect(decision22).To(BeEmpty())
 		})
 		It("succeeds to Get OPA Decision FromHTTP to path << str >>", func() {
-			Opax.SetOpaxDetails(false,"127.0.0.1", false, 8181)
+			Opax.SetOpaxDetails(false, "127.0.0.1", false, 8181)
 
 			var cfg interface{}
 
@@ -69,7 +70,7 @@ var _ = Describe("Session", func() {
 			Expect(decision1).To(Equal("{\"result\":\"foo\"}"))
 		})
 		It("succeeds to Get OPA Decision FromHTTP to path << main >>", func() {
-			Opax.SetOpaxDetails(false,"127.0.0.1", false, 8181)
+			Opax.SetOpaxDetails(false, "127.0.0.1", false, 8181)
 
 			var cfg interface{}
 
@@ -80,7 +81,7 @@ var _ = Describe("Session", func() {
 			Expect(decision5).To(Equal("{\"result\":true}"))
 		})
 		It("Error to Get OPA Decision FromHTTP to fake path", func() {
-			Opax.SetOpaxDetails(false,"127.0.0.1", false, 8181)
+			Opax.SetOpaxDetails(false, "127.0.0.1", false, 8181)
 
 			var cfg interface{}
 
@@ -90,7 +91,7 @@ var _ = Describe("Session", func() {
 			Expect(decision2).To(BeEmpty())
 		})
 		It("succeeds to Get OPA Decision FromHTTP to path << loopback >>", func() {
-			Opax.SetOpaxDetails(false,"127.0.0.1", false, 8181)
+			Opax.SetOpaxDetails(false, "127.0.0.1", false, 8181)
 
 			var cfg interface{}
 
