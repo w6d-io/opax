@@ -22,7 +22,7 @@ HOW RUN UNITS TEST TO Opax ?
 
 Before Test:
 - prepare environment to mock OPA binary with command lines :
-<< make opa >> and after << make run >>
+<< make opa >> and after << make start >>
 
 - for stop opa server run command line : << make stop >>
 
