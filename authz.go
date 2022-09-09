@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/go-logr/logr"
 	"google.golang.org/grpc/metadata"
 
 	"github.com/w6d-io/x/errorx"
@@ -116,7 +115,7 @@ func (a auth) GetAuthorizationFromGRPCCtx(ctx context.Context) (string, error) {
 func (a auth) do(ctx context.Context, query Query) (string, error) {
 	log := logx.WithName(ctx, "do() (string, error)")
 
-	result, err := a.getOpaDecisionFromCurl(log, query)
+	result, err := a.getOpaDecisionFromCurl(ctx, query)
 	if err != nil {
 		log.Error(err, "do() Error !")
 		return "", err
@@ -128,7 +127,9 @@ func (a auth) do(ctx context.Context, query Query) (string, error) {
 
 // getOpaDecisionFromCurl call opa by curl
 // if OPA is unreachable or an other issues, return nil deccision with statusCode of the call and error-go
-func (a auth) getOpaDecisionFromCurl(log logr.Logger, query Query) (string, error) {
+func (a auth) getOpaDecisionFromCurl(ctx context.Context, query Query) (string, error) {
+	log := logx.WithName(ctx, "getOpaDecisionFromCurl")
+
 	jsonStr, err := json.Marshal(query.Input)
 	if err != nil {
 		log.Error(err, "get opa param Input failed")
